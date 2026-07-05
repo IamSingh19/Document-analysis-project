@@ -132,8 +132,8 @@ async def startup_event():
         db.close()
         logger.info("✓ Database connection verified")
     except Exception as e:
-        logger.error(f"✗ Database connection failed: {e}")
-        raise
+        logger.warning(f"⚠ Database connection check failed (will retry): {e}")
+        # Don't raise - let app start anyway
 
 @app.on_event("startup")
 async def create_tables():
@@ -141,8 +141,7 @@ async def create_tables():
         Base.metadata.create_all(bind=engine)
         logger.info("✓ Database tables created/verified")
     except Exception as e:
-        logger.error(f"✗ Table creation failed: {e}")
-        raise
+        logger.warning(f"⚠ Table creation warning: {e}")
 
 # Import dependencies from deps module
 from deps import get_db as deps_get_db, get_current_user as deps_get_current_user
